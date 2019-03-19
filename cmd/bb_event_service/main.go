@@ -15,7 +15,22 @@ import (
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
+
+func makeCreds(certFile * string, keyFile * string) (credentials.TransportCredentials, error) {
+	if *certFile == "" && *keyFile == "" {
+		// No TLS
+		return nil, nil
+	}
+	cert, err := tls.LoadX509KeyPair(*certFile, *keyFile)
+	if err != nil {
+		return nil, fmt.Errorf("Can't load X509 certificate and keypair '%q', '%q': %s", certFile, keyFile, err)
+	}
+	cfg := &tls.Config{Certificates: []tls.Certificate{cert}}
+	creds := credentials.NewTLS(cfg)
+	return creds, nil
+}
 
 func main() {
 	if len(os.Args) != 2 {
@@ -39,11 +54,20 @@ func main() {
 		log.Fatal(http.ListenAndServe(eventServiceConfiguration.MetricsListenAddress, nil))
 	}()
 
-	// RPC server.
-	s := grpc.NewServer(
+	// RPC server with optional TLS.
+	opts := []grpc.ServerOption {
 		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
-	)
+	}
+	creds, err := makeCreds(certFile, keyFile)
+	if err != nil {
+		log.Fatal("Loading TLS materials failed: ", err)
+	} else if creds != nil {
+		opts = append(opts, grpc.Creds(creds))
+		log.Print("Listening with TLS")
+	}
+	s := grpc.NewServer(opts...)
+
 	build.RegisterPublishBuildEventServer(s, &buildEventServer{
 		instanceName:              "bb-event-service",
 		contentAddressableStorage: contentAddressableStorage,
