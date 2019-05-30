@@ -21,6 +21,8 @@ http_archive(
 
 http_archive(
     name = "io_bazel_rules_go",
+    patch_args = ["-p1"],
+    patches = ["@com_github_buildbarn_bb_storage//:rules-go_grpc-go_binlogger-visibility.patch"],
     sha256 = "f04d2373bcaf8aa09bccb08a98a57e721306c8f6043a2a0ee610fd6853dcde3d",
     urls = [
         "https://storage.googleapis.com/bazel-mirror/github.com/bazelbuild/rules_go/releases/download/0.18.6/rules_go-0.18.6.tar.gz",
