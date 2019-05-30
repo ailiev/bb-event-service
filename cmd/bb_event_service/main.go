@@ -11,6 +11,7 @@ import (
 
 	"github.com/buildbarn/bb-storage/pkg/ac"
 	"github.com/buildbarn/bb-storage/pkg/blobstore/configuration"
+	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
@@ -41,6 +42,11 @@ func main() {
 		keyFile          = flag.String("key-file", "", "TLS key file")
 	)
 	flag.Parse()
+
+	err := util.UseBinaryLogTempFileSink()
+	if err != nil {
+		log.Fatalf("Failed to UseBinaryLogTempFileSink: %v", err)
+	}
 
 	// Storage access.
 	contentAddressableStorage, actionCache, err := configuration.CreateBlobAccessObjectsFromConfig(*blobstoreConfig)

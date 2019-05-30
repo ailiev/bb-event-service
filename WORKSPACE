@@ -23,6 +23,8 @@ http_archive(
     name = "io_bazel_rules_go",
     sha256 = "6776d68ebb897625dead17ae510eac3d5f6342367327875210df44dbe2aeeb19",
     urls = ["https://github.com/bazelbuild/rules_go/releases/download/0.17.1/rules_go-0.17.1.tar.gz"],
+    patches = ["@com_github_buildbarn_bb_storage//:rules-go_grpc-go_binlogger-visibility.patch"],
+    patch_args = ["-p1"],
 )
 
 http_archive(
@@ -42,7 +44,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
     name = "com_github_buildbarn_bb_storage",
-    commit = "51755c5826e551fc294fdb952808e76bbd693163",
+    commit = "4b81a30b0f70297b711d2f5fbeaf71484c0556cb",
     remote = "https://github.com/ailiev/bb-storage.git",
 )
 
