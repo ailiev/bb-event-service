@@ -3,7 +3,7 @@ syntax = "proto3";
 package buildbarn.configuration.bb_event_service;
 
 import "pkg/proto/configuration/blobstore/blobstore.proto";
-import "pkg/proto/configuration/bb_storage/bb_storage.proto";
+import "pkg/proto/configuration/server/server.proto";
 
 option go_package = "github.com/buildbarn/bb-event-service/pkg/proto/configuration/bb_event_service";
 
@@ -16,4 +16,7 @@ message EventServiceConfiguration {
 
   // Address on which to listen for RPCs. Defaults to ":8983".
   string grpc_listen_address = 3;
+
+  // TLS configuration, if enabled.
+  buildbarn.configuration.server.TLSConfiguration tls = 4;
 }

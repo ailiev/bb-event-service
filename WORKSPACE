@@ -47,7 +47,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
     name = "com_github_buildbarn_bb_storage",
-    commit = "kukuef572f554de57d02e9e06454437c4c1a7d2beb46",
+    commit = "24c632fbe79a4d886f0f1c861c3d4d4208d3a7f4",
     remote = "https://github.com/ailiev/bb-storage.git",
 )
 
